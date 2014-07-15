@@ -1,0 +1,304 @@
+a
+{
+    text-decoration:    none;
+    color:              #518341;
+}
+a:hover, a:hover
+{
+    color:              #C99199;
+}
+.article_title
+{
+    margin-bottom:      25px;
+    text-align:         center;
+}
+.article_title+blockquote
+{
+    margin-top:         20px;
+    margin-bottom:      20px;
+}
+article h2+h3
+{
+    margin:             -22px 10px 0px 0px;
+    float:              right;
+}
+article:last-of-type
+{
+    margin-bottom:      30px;
+}
+article img
+{
+    display:            block;
+    margin:             25px auto;
+    width:              100%;
+}
+blockquote, blockquote p, ol, ol p, ul, ul p
+{
+    margin:             0px 0px 0px 10px;
+}
+blockquote:last-of-type+*, ol:last-of-type+*, ul:last-of-type+*
+{
+    margin-top:         20px;
+}
+body
+{
+    padding:            0px;
+    margin:             0px;
+    padding-bottom:      180px;
+    pointer-events:     auto;
+    font-family:        'Roboto', sans-serif;
+    line-height:        200%;
+    opacity:            0.8;
+    background-color:   #F6F6F6;
+}
+#continue_reading td
+{
+    width:              30%;
+    margin:             0px auto;
+}
+#continue_reading td article
+{
+    margin-top:         150px;
+}
+#continue_reading td:first-of-type article
+{
+    text-align:         right;
+    margin-right:       50px;
+}
+#continue_reading td:nth-of-type(2) article
+{
+    text-align:         center;
+}
+#continue_reading td:last-of-type article
+{
+    text-align:         left;
+    margin-left:        50px;
+}
+.disable-hover, .disable-hover *
+{
+  pointer-events:       none !important;
+}
+.footnotes:nth-of-type(1):before
+{
+    content:            "";
+    height:             1px;
+    width:              20%;
+    display:            block;
+    border-top:         1px solid gray;
+    margin:             50px auto 50px auto;
+}
+.footnotes
+{
+    margin-bottom:      75px;
+}
+.footnotes ul
+{
+    list-style-type:    none;
+    margin:             0px;
+    padding:            0px;
+}
+.footnotes p
+{
+    margin:             10px 0px 10px 0px;
+}
+.months
+{
+    text-align:        center;
+}
+.fn
+{
+    position:           relative;
+    top:                2px;
+}
+#home, #Colophone, #Archive
+{
+    margin-top:         80px;
+}
+#home #home_menu, #Colophon #colophon_menu, #Archive #archive_menu, #remote_home_link, #remote_colophon_link, #remote_archive_link, #Error #home_link, #Error #colophon_link, #Error #archive_link
+{
+    display:            none;
+}
+#Error #remote_home_link, #Error #remote_colophon_link, #Error #remote_archive_link
+{
+    display:            inline;
+}
+.image
+{
+    margin:             0px -50% 0px -50%;
+}
+.image+p
+{
+    margin-bottom:      100px;
+}
+#main_row td article
+{
+    margin-top:         100px !important;
+}
+#main_row td article:first-of-type
+{
+    margin-top:         50px !important;
+}
+#trailing_archive_link
+{
+    display:            block;
+    margin:             50px;
+    text-align:         center;
+}
+hr
+{
+    width:              100px;
+    border:             none;
+    border-top:         1px dashed #8F8F8F;
+    margin:             25px auto;
+}
+#ipad_device
+{
+    display:            none;
+}
+.linkpost
+{
+    color:              #8AC178;
+    text-decoration:    underline;
+}
+.linkpost:hover
+{
+    color:              #C97D88;
+}
+.original
+{
+    color:              #255515;
+}
+.original:hover
+{
+    color:              #934953;
+}
+#main_section article
+{
+    width:              50%;
+    margin:             0px auto;
+}
+.ordered_list
+{
+    margin-left:        20px;
+    display:            block;
+}
+sup
+{
+    margin:             0px 2px 0px 2px;
+}
+table
+{
+    width:              100%;
+}
+tr:nth-of-type(1) td article
+{
+    width:              50%;
+    margin:             0px auto;
+}
+tr:nth-of-type(1) td article:first-of-type
+{
+    margin-bottom:      100px;
+}
+#trailing_archive_link
+{
+    display:            none;
+}
+tr nav ul
+{
+    text-align:         center;
+    margin:             100px 0px 100px 0px;
+    padding:            0px;
+}
+tr nav ul li
+{
+    display:            inline;
+    list-style:         none;
+    margin-right:       20px;
+}
+
+
+/*iPhone Portrait */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px), only screen and (min-device-width : 320px) and (max-device-width : 568px), only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+    body
+    {
+        font-size:          250%;
+    }
+    tr:nth-of-type(1) td article
+    {
+        width:              90%;
+    }
+    #main_section article
+    {
+        width:              90%;
+    }
+    .image
+    {
+        margin:             0px -10% 0px -10%;
+    }
+}
+/* iPhone landscape */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) and (orientation : landscape) {
+    body
+    {
+        font-size:          250%;
+    }
+    tr:nth-of-type(1) td article
+    {
+        width:              90%;
+    }
+    #main_section article
+    {
+        width:              90%;
+    }
+    .image
+    {
+        margin:             0px -10% 0px -10%;
+    }
+}
+/*iPad landscape*/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) { 
+    body
+    {
+        font-size:          150%;
+    }
+    tr:nth-of-type(1) td article
+    {
+        width:              90%;
+    }
+    #main_section article
+    {
+        width:              90%;
+    }
+    .image
+    {
+        margin:             0px -10% 0px -10%;
+    }
+    #ipad_device
+    {
+        display:            inline;
+    }
+}
+
+/*iPad Portrait*/
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+    body
+    {
+        font-size:          150%;
+    }
+    tr:nth-of-type(1) td article
+    {
+        width:              90%;
+    }
+    #main_section article
+    {
+        width:              90%;
+    }
+    .image
+    {
+        margin:             0px -10% 0px -10%;
+    }
+    #ipad_device
+    {
+        display:            inline;
+    }
+}

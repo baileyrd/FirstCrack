@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" manifest="cache.appcache">
+    <head>
+        <meta charset="UTF-8">
+        <!--BETA-->
+        <link rel="alternate" type="application/rss+xml"  href="http://feedpress.me/zacjszewczyk" title="Zac J. Szewczyk">
+        <title>
+            Zac J. Szewczyk
+        </title>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="../Style/main.css" type="text/css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="../Scripts/main.js" type="text/javascript"></script>
+        <script src="../Scripts/jquery.ios-shake.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        $(document).ready(function(){CheckCookie();if($("#ipad_device").css("display")=="none"){$.shake({violence:9.0,hf:0.2,shakethreshold:2,debounce:3000,callback:function(){ChangeCookie()}})}else{$.shake({violence:5.0,hf:0.8,shakethreshold:2,debounce:1000,callback:function(){ChangeCookie()}})}});
+        </script>
+    </head>
+    <body id="BODYID">
+        <table>
+            <tr>
+                <td colspan="3" valign="top">
+                    <!--FA-->
+                    <!--SA-->
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <nav>
+                        <ul>
+                            <li id="home_menu">
+                                <a id="home_link" href="index.htm">Home</a>
+                                <a id="remote_home_link" href="http://zacjszewczyk.com/Structure/index.htm">Home</a>
+                            </li>
+                            <li id="colophon_menu">
+                                <a id="colophon_link" href="Colophon.htm">Colophon</a>
+                                <a id="remote_colophon_link" href="http://zacjszewczyk.com/Structure/Colophon.htm">Colophon</a>
+                            </li>
+                            <li>
+                                <a href="http://feeds.uri.lv/zacjszewczyk">RSS</a>
+                            </li>
+                            <li id="archive_menu">
+                                <a id="archive_link" href="Archive.htm">Post Archives</a>
+                                <a id="remote_archive_link" href="http://zacjszewczyk.com/Structure/Archive.htm">Post Archives</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+            <tr id="main_row">
+                <td colspan="3" id="main_section">
+                    <!--Divider-->
+                    <a id="trailing_archive_link" href="Archive.htm">More Articles</a>
+                </td>
+            </tr>
+            <tr id="continue_reading">
+                <td>
+                    <article>
+                        <!--PREVIOUS-->
+                    </article>
+                </td>
+                <td>
+                    <article>
+                        <a href="Archive.htm">All Articles</a>
+                    </article>
+                </td>
+                <td>
+                    <article>
+                        <!--NEXT-->
+                    </article>
+                </td>
+        </table>
+        <span id="ipad_device"></span>
+    </body>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36771281-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</html>
