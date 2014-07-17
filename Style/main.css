@@ -32,6 +32,11 @@ article img
     margin:             25px auto;
     width:              100%;
 }
+article ul
+{
+    margin-left:        0px;
+    padding-left:       20px;
+}
 blockquote, blockquote p, ol, ol p, ul, ul p
 {
     margin:             0px 0px 0px 10px;

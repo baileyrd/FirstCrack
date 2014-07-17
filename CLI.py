@@ -197,6 +197,27 @@ Entering "-h" into the prompt at any point in time will display the menu below.
             ftp.quit()
             print ("The site has been updated.")
             sys.exit(0)
+        elif (re.search("-M", query) != None):
+            # Update the site via FTP
+            ftp = ftplib.FTP(domain)
+            ftp.login(username, password)
+
+            if (os.getcwd().split("/")[-1] == "Beta"):
+                ftp.cwd("Beta")
+
+            ftp.cwd("Images")
+
+            for each in os.listdir("Images"):
+                if (each.endswith(".jpg")):
+                    print ("Uploading \"%s\"" % (each))
+
+
+                    # PROBLEM LINE
+                    ftp.storlines("STOR " + each, open("Images/"+each, "rb"))
+
+
+            sys.exit(0)
+
         # Exit the command-line interface and proceed with Update.py.
         if (re.search("exit", query) != None) or (re.search("logout", query) != None):
             return False

@@ -30,7 +30,9 @@ if (len(sys.argv) > 1):
 def ExtractFilename(filename):
     return filename.split(",")[0].lstrip("[")+".htm"
 def toXML(string):
-    return re.sub("[\s\w](\&[^#8220;|^#8221;])[\s\w]", "&amp;", string).replace("<", "&lt;").replace(">", "&gt;")
+    if (re.search("[\s\w](\&[^#8220;|^#8221;])[\s\w]", string) != None):
+        string = string.replace("&", "&#38;")
+    return string.replace("<", "&lt;").replace(">", "&gt;")
 def rreplace(s, old, new, occurrence):
     li = s.rsplit(old, occurrence)
     return new.join(li)
@@ -146,7 +148,7 @@ for position, each in enumerate(files):
     sname = each.split(",")[0].lstrip("[").replace(" ", "-")+".htm" # Define a variable for the structure file's name
 
     # Create a variable for the "Permalink"--formerly "Read More..."--link
-    read_more = "<a class=\"read_more_link\" href=\"%s\">&#9449;</a>" % (sname)
+    read_more = "<a class=\"read_more_link\" href=\"%s\">&#9449;</a>" % (sname.replace("&", "&amp;"))
 
     if open("Content/"+cname, "r").readline().startswith("Type:") == False:
         Migrate(cname, each.split(",")[1].rstrip("]").strip())
@@ -176,11 +178,9 @@ for position, each in enumerate(files):
                     types.append("<bqt>,,</bqt>")
                 else:
                     types.append("<blockquote>,,</blockquote>")
-            elif (re.match("[a-zA-Z_\[\*\"]", line) != None):
-                types.append("<p>,,</p>")
             elif (re.match("\*\s", line) != None):
                 line = line.replace("* ", "")
-                if ((types[-1] == "<ul>,,</ul>") or (types[-2] == "<ul>,,</ul>") or (types[-3] == "<ul>,,</ul>")):
+                if ((types[-1] == "<ul>,,</ul>") or (types[-2] == "<ul>,,</ul>") or (types[-3] == "<ul>,,</ul>") or (types[-1] == "<li>,,</li>") or (types[-2] == "<li>,,</li>") or (types[-3] == "<li>,,</li>")):
                     types.append("<li>,,</li>")
                 else:
                     types.append("<ul>,,</ul>")
@@ -190,6 +190,8 @@ for position, each in enumerate(files):
                     types.append("<li>,,</li>")
                 else:
                     types.append("<ol>,,</ol>")
+            elif (re.match("[a-zA-Z_\[\*\"]", line) != None):
+                types.append("<p>,,</p>")
             else: 
                 types.append("<blank>,,</blank>")
 
@@ -199,6 +201,10 @@ for position, each in enumerate(files):
             current = types[-1]
             second = types[-2]
             third = types[-3]
+
+            # line = line.replace("&", "&#38;")
+            if (re.search("(\&)", line) != None):
+                line = line.replace("&", "&#38;")
 
             if (re.match("---", line) != None): # Parse <hr /> elements
                 line = line.replace("---", "<hr />")
@@ -255,7 +261,7 @@ for position, each in enumerate(files):
 
             for each in re.findall("(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\]\(['\(\)\#\;?\@\%\w\&:\,\./\~\!\#\=\+-]*\))", line): # Parse links
                 desc = each.split("]")[0].lstrip("[")
-                url = each.split("]")[1].lstrip("(").replace(")", "", 1)
+                url = each.split("]")[1].lstrip("(").replace(")", "", 1).replace("&", "&amp;")
                 if (url.endswith(".txt") == True):
                     url = re.sub("\'", "", url).replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
                     line = line.replace(each, "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
@@ -263,11 +269,14 @@ for position, each in enumerate(files):
                     line = line.replace(each, "<a class=\"local\" href=\""+desc.replace("<em>", "").replace("</em>", "").replace(" ", "-")+".htm\">"+desc+"</a>")
                 else:
                     line = line.replace(each, "<a href=\""+url+"\">"+desc+"</a>")
-            for each in re.findall("(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\]\(['\s\(\)\#\;?\@\%\w\&:\,\./\!\#\=\+-]*\))", line):
+            for each in re.findall("(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\]\(['\s\(\)\#\;?\@\%\w\&:\,\./\!\#\=\+-]*\)[^\s])", line):
                 desc = each.split("]")[0].lstrip("[")
-                url = each.split("]")[1].lstrip("(").replace(")", "", 1)
+                url = each.split("]")[1].lstrip("(").replace(")", "", 1).replace("&", "&amp;")
+                url = url.strip(r"[\.\,\:\;\"\?\&amp;]")
+                # if (title == "The Jolla Phone"):
+                #     print (url)
                 if (url.endswith(".txt") == True):
-                    url = re.sub("\'", "", url).replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                    url = url.replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
                     line = line.replace(each, "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
                 else:
                     line = line.replace(each, "<a href=\""+url+"\">"+desc+"</a>")
@@ -324,8 +333,9 @@ for position, each in enumerate(files):
             <link>http://zacjszewczyk.com/Structure/%s</link>
             <pubDate>%s EST</pubDate>
             <guid>http://zacjszewczyk.com/Structure/%s</guid>
-            <description>\n                %s""" % (toXML(title), sname, pubdate, sname, toXML(first_paragraph.replace("#fn", "http://zacjszewczyk.com/Structure/%s#fn" % (sname)).replace("class=\"local\" href=\"", "href=\"http://zacjszewczyk.com/Structure/")))
-                feed_fd.write(feed_buffer)
+            <description>\n                %s""" % (toXML(title), sname.replace("&", "&amp;"), time.strftime("%a, %d %b %Y %H:%M:%S%Z", time.strptime(pubdate, "%Y/%m/%d %H:%M:%S")), sname.replace("&", "&amp;"), toXML(first_paragraph.replace("#fn", "http://zacjszewczyk.com/Structure/%s#fn" % (sname)).replace("class=\"local\" href=\"", "href=\"http://zacjszewczyk.com/Structure/")))
+                if (file_idx < 25):
+                    feed_fd.write(feed_buffer)
                 mdate = (datetime.datetime.fromtimestamp(os.path.getmtime("Content/"+cname))).strftime("%a, %d %b %Y %H:%M:%S%Z")
                 if ((mdate[5:16].split(" ")[0] == "01") or (mdate[5:16].split(" ")[0] == "21") or (mdate[5:16].split(" ")[0] == "31")):
                     suffix = "st"
@@ -338,23 +348,27 @@ for position, each in enumerate(files):
                 if ((cname != "Colophon.txt") and (cname != "Error.txt")):
                     structure_fd.write("\n<p>Published on %s</p>\n" % ((months[name_to_number[mdate[5:16].split(" ")[1]]]+" "+mdate[5:16].split(" ")[0].lstrip("0")+suffix+", "+mdate[5:16].split(" ")[2])))
                 structure_fd.write("\n<h2 class=\"article_title\"><a class=\"%s\" href=\"%s\">%s</a></h2>\n%s" % (atype, link, title, line))
-            elif (atype == "linkpost"):
+            elif (atype == "linkpost" and file_idx < 25):
                 write_buffer += "\n"+line
                 structure_fd.write("\n"+line)
-                feed_fd.write("\n                "+toXML(line))
+                if (file_idx < 25):
+                    feed_fd.write("\n                "+toXML(line))
             else:
                 structure_fd.write("\n"+line)
-                feed_fd.write("\n                "+toXML(line))
+                if (file_idx < 25):
+                    feed_fd.write("\n                "+toXML(line))
 
             iter_count += 1
 
         else:
             if (active == "</div>"):
                 structure_fd.write("\n"+"""&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""+active)
-                feed_fd.write(toXML("\n"+"""&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""+active))
+                if (file_idx < 25):
+                    feed_fd.write(toXML("\n"+"""&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""+active))
             elif (active != ""):
                 structure_fd.write("\n"+active)
-                feed_fd.write(toXML("\n"+active))
+                if (file_idx < 25):
+                    feed_fd.write(toXML("\n"+active))
             
             structure_fd.write("\n                    </article>\n")
 
@@ -365,7 +379,8 @@ for position, each in enumerate(files):
             else:
                 structure_fd.write(content[1].replace("<!--PREVIOUS-->", """<a href="%s">Previous article</a>""" % (ExtractFilename(previous).replace(" ", "-"))).replace("<!--NEXT-->", """<a href="%s">Next article</a>""" % (ExtractFilename(next).replace(" ", "-"))))
 
-            feed_fd.write("""\n                %s\n            </description>\n        </item>""" % (toXML(read_more.replace("href=\"", "href=\"http://zacjszewczyk.com/Structure/", 1))))
+            if (file_idx < 25):
+                feed_fd.write("""\n                %s\n            </description>\n        </item>""" % (toXML(read_more.replace("href=\"", "href=\"http://zacjszewczyk.com/Structure/", 1))))
             write_buffer = rreplace(write_buffer, "</p>", "&nbsp;&nbsp;"+read_more+"</p>\n</article>", 1)
             if (cname != "Colophon.txt" and cname != "Error.txt"):
                 if (write_buffer.find("#fn") != -1):
@@ -454,3 +469,5 @@ index_fd.close()
 t2 = datetime.datetime.now()
 
 print ("Execution time: %s" % (t2-t1))
+
+shutil.copyfile("Main_feed.xml", "../../../Public/Main_feed.xml")
