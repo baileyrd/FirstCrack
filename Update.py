@@ -157,6 +157,8 @@ for position, each in enumerate(files):
         atype = fd.readline().replace("Type: ", "").strip()
         title = fd.readline().replace("Title: ", "").strip()
         link = fd.readline().replace("Link: ", "").strip()
+        if (atype == "original"):
+            link = link.replace(" ", "-")
         pubdate = fd.readline().replace("Pubdate: ", "").strip()
         author = fd.readline().replace("Author: ", "")
 
@@ -259,27 +261,17 @@ for position, each in enumerate(files):
                 alt = each.split("]")[1].split(" &#8220;")[1].rstrip("&#8221;)")
                 line = line.replace(each, "<div class=\"image\"><img src=\""+url+"\" alt=\""+alt+"\" title=\""+title+"\"></div>")
 
-            for each in re.findall("(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\]\(['\(\)\#\;?\@\%\w\&:\,\./\~\!\#\=\+-]*\))", line): # Parse links
-                desc = each.split("]")[0].lstrip("[")
-                url = each.split("]")[1].lstrip("(").replace(")", "", 1).replace("&", "&amp;")
-                if (url.endswith(".txt") == True):
-                    url = re.sub("\'", "", url).replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                    line = line.replace(each, "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
-                elif (url == ""):
-                    line = line.replace(each, "<a class=\"local\" href=\""+desc.replace("<em>", "").replace("</em>", "").replace(" ", "-")+".htm\">"+desc+"</a>")
-                else:
-                    line = line.replace(each, "<a href=\""+url+"\">"+desc+"</a>")
-            for each in re.findall("(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\]\(['\s\(\)\#\;?\@\%\w\&:\,\./\!\#\=\+-]*\)[^\s])", line):
-                desc = each.split("]")[0].lstrip("[")
-                url = each.split("]")[1].lstrip("(").replace(")", "", 1).replace("&", "&amp;")
-                url = url.strip(r"[\.\,\:\;\"\?\&amp;]")
-                # if (title == "The Jolla Phone"):
-                #     print (url)
+            for each in re.findall("""(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\])(\(\s*(<.*?>|((?:(?:\(.*?\))|[^\(\)]))*?)\s*((['"])(.*?)\12\s*)?\))""", line): # Parse links
+                desc = each[0].lstrip("[").rstrip("]")
+                url = each[1].lstrip("(").rstrip(")").replace("&", "&amp;")
+
                 if (url.endswith(".txt") == True):
                     url = url.replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                    line = line.replace(each, "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
+                    line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
+                elif (url == ""):
+                    line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+desc.replace("<em>", "").replace("</em>", "").replace(" ", "-")+".htm\">"+desc+"</a>")
                 else:
-                    line = line.replace(each, "<a href=\""+url+"\">"+desc+"</a>")
+                    line = line.replace(each[0]+each[1], "<a href=\""+url+"\">"+desc+"</a>")
 
             # Parse footnotes
             for each in re.findall("(\[\^[0-9]+\])", line):
@@ -348,7 +340,7 @@ for position, each in enumerate(files):
                 if ((cname != "Colophon.txt") and (cname != "Error.txt")):
                     structure_fd.write("\n<p>Published on %s</p>\n" % ((months[name_to_number[mdate[5:16].split(" ")[1]]]+" "+mdate[5:16].split(" ")[0].lstrip("0")+suffix+", "+mdate[5:16].split(" ")[2])))
                 structure_fd.write("\n<h2 class=\"article_title\"><a class=\"%s\" href=\"%s\">%s</a></h2>\n%s" % (atype, link, title, line))
-            elif (atype == "linkpost" and file_idx < 25):
+            elif (atype == "linkpost"):
                 write_buffer += "\n"+line
                 structure_fd.write("\n"+line)
                 if (file_idx < 25):
