@@ -83,7 +83,7 @@ body
 {
   pointer-events:       none !important;
 }
-.footnotes:nth-of-type(1):before
+.footnote:nth-of-type(1):before
 {
     content:            "";
     height:             1px;
@@ -92,17 +92,17 @@ body
     border-top:         1px solid gray;
     margin:             50px auto 50px auto;
 }
-.footnotes
+.footnote
 {
     margin-bottom:      75px;
 }
-.footnotes ul
+.footnote ul
 {
     list-style-type:    none;
     margin:             0px;
     padding:            0px;
 }
-.footnotes p
+.footnote p
 {
     margin:             10px 0px 10px 0px;
 }

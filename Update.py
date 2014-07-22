@@ -308,6 +308,7 @@ for position, each in enumerate(files):
             elif ((current == "<div class=\"footnote\">,,</div>")): # If a footnote
                 active = "</div>"
                 mark = int(line.split("]")[0].lstrip("[>"))
+                line = line.split("]")[1]
                 if (mark == 1): # If the first footnote
                     line = current.split(",,")[0].replace("div ", "div id=\"fn"+str(mark)+"\" ")+"\n<p>"+line.strip()+"""</p>&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""
                 else: # If a later footnote
@@ -353,7 +354,7 @@ for position, each in enumerate(files):
             iter_count += 1
 
         else:
-            if (active == "</div>"):
+            if (active == "</div>") and (mark > 1):
                 structure_fd.write("\n"+"""&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""+active)
                 if (file_idx < 25):
                     feed_fd.write(toXML("\n"+"""&#160;&#160;<a class="fn" title="return to article" href="#fnref"""+str(mark)+"""">&#x21a9;</a>"""+active))
