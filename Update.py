@@ -119,10 +119,10 @@ feed_fd.write("""\
     <link>http://zacjszewczyk.com</link>
     <description></description>
     <language>en-us</language>
-    <atom:link href="http://zacjszewczyk.com/rss" rel="self" type="application/rss+xml" />
+    <atom:link href="http://zacjszewczyk.com/Main_feed.xml" rel="self" type="application/rss+xml" />
     <lastBuildDate>%s EST</lastBuildDate>
     <ttl>5</ttl>
-    <generator>First Crack</generator>""" % (today.strftime("%a, %d %b %Y %H:%M:%S")))
+    <generator>First Crack</generator>""" % (today.strftime("%a, %d %b %Y %I:%M:%S")))
 
 # Define a dictionary for converting three letter month names to their full counterpart
 months = {"01" : "January", "02" : "February", "03" : "March", "04" : "April", "05" : "May", "06" : "June", "07" : "July", "08" : "August", "09" : "September", "10" : "October", "11" : "November", "12" : "December"}
@@ -194,6 +194,8 @@ for position, each in enumerate(files):
                     types.append("<ol>,,</ol>")
             elif (re.match("[a-zA-Z_\[\*\"]", line) != None):
                 types.append("<p>,,</p>")
+            elif (re.match("<", line) != None):
+                types.append("RAW HTML")
             else: 
                 types.append("<blank>,,</blank>")
 
@@ -204,84 +206,87 @@ for position, each in enumerate(files):
             second = types[-2]
             third = types[-3]
 
-            # line = line.replace("&", "&#38;")
-            if (re.search("(\&)", line) != None):
-                line = line.replace("&", "&#38;")
+            if (current != "RAW HTML"):
+                # line = line.replace("&", "&#38;")
+                if (re.search("(\&)", line) != None):
+                    line = line.replace("&", "&#38;")
 
-            if (re.match("---", line) != None): # Parse <hr /> elements
-                line = line.replace("---", "<hr />")
+                if (re.match("---", line) != None): # Parse <hr /> elements
+                    line = line.replace("---", "<hr />")
 
-            if (re.search("(--)", line)): # Parse emdashes
-                line = line.replace("--", "&#160;&#8212;&#160;")
+                if (re.search("(--)", line)): # Parse emdashes
+                    line = line.replace("--", "&#160;&#8212;&#160;")
 
-            for each in re.findall("([\s\<\>\\\*\/\[\.\-\(]+\"[\w\%\#\\*<\>]+)", line): # Parse double-quote quotations
-                ftxt = each.replace("\"", "&#8220;", 1)
-                line = line.replace(each, ftxt)
-            for each in re.findall("(\w+\.?\"[\s\)\]\<\>\.\*\-\,])", line):
-                ftxt = each.replace("\"", "&#8221;", 1)
-                line = line.replace(each, ftxt)
+                for each in re.findall("([\s\<\>\\\*\/\[\.\-\(]+\"[\w\%\#\\*<\>]+)", line): # Parse double-quote quotations
+                    ftxt = each.replace("\"", "&#8220;", 1)
+                    line = line.replace(each, ftxt)
+                for each in re.findall("(\w+\.?\"[\s\)\]\<\>\.\*\-\,])", line):
+                    ftxt = each.replace("\"", "&#8221;", 1)
+                    line = line.replace(each, ftxt)
 
-            for each in re.findall("(\w+'[\w+|\s+])", line): # Parse single-quote quotations
-                ftxt = each.replace("\'", "&#8217;")
-                line = line.replace(each, ftxt)
-            for each in re.findall("([\s\(]'\w+)", line):
-                ftxt = each.replace("\'", "&#8216;", 1)
-                line = line.replace(each, ftxt)
+                for each in re.findall("(\w+'[\w+|\s+])", line): # Parse single-quote quotations
+                    ftxt = each.replace("\'", "&#8217;")
+                    line = line.replace(each, ftxt)
+                for each in re.findall("([\s\(]'\w+)", line):
+                    ftxt = each.replace("\'", "&#8216;", 1)
+                    line = line.replace(each, ftxt)
 
-            if re.search("(#){4}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){4}", line): # Parse <h4> elements
-                header_id = line.replace("#### ", "", 1).replace(" ####", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
-                line = line.replace("#### ", "<h4 id=\""+header_id.strip()+"\">", 1).replace(" ####", "</h4>", 1)
+                if re.search("(#){4}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){4}", line): # Parse <h4> elements
+                    header_id = line.replace("#### ", "", 1).replace(" ####", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                    header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
+                    line = line.replace("#### ", "<h4 id=\""+header_id.strip()+"\">", 1).replace(" ####", "</h4>", 1)
 
-            if re.search("(#){3}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){3}", line): # Parse <h3> elements
-                header_id = line.replace("### ", "", 1).replace(" ###", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
-                line = line.replace("###", "<h3 id=\""+header_id.strip()+"\">", 1).replace("###", "</h3>", 1)
+                if re.search("(#){3}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){3}", line): # Parse <h3> elements
+                    header_id = line.replace("### ", "", 1).replace(" ###", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                    header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
+                    line = line.replace("###", "<h3 id=\""+header_id.strip()+"\">", 1).replace("###", "</h3>", 1)
 
-            if re.search("(#){2}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){2}", line): # Parse <h2> elements
-                header_id = line.replace("## ", "", 1).replace(" ##", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
-                line = line.replace("## ", "<h2 id=\""+header_id.strip()+"\">", 1).replace(" ##", "</h2>", 1)
+                if re.search("(#){2}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){2}", line): # Parse <h2> elements
+                    header_id = line.replace("## ", "", 1).replace(" ##", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                    header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
+                    line = line.replace("## ", "<h2 id=\""+header_id.strip()+"\">", 1).replace(" ##", "</h2>", 1)
 
-            if re.search("(#){1}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){1}", line): # Parse <h1> elements
-                header_id = line.replace("# ", "", 1).replace(" #", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
-                line = line.replace("# ", "<h1 id=\""+header_id.strip()+"\">", 1).replace(" #", "</h1>", 1)
+                if re.search("(#){1}\s[\s\w\:\[\]\&\#\+\=\!\$\%\|\;\*\?\(\,\)\/\.\-\_\'\"]+\s(#){1}", line): # Parse <h1> elements
+                    header_id = line.replace("# ", "", 1).replace(" #", "", 1).replace(" ", "").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                    header_id = re.sub("[^a-zA-Z0-9_\s]", "", header_id)
+                    line = line.replace("# ", "<h1 id=\""+header_id.strip()+"\">", 1).replace(" #", "</h1>", 1)
 
-            for each in re.findall("\*{1}[\w:\"\.\+'\s\.|#\\&=,\$\!\?\;\-\[\]]+\*{1}", line):
-                if (cname == "Yahoo to Acquire Tumblr.txt"):
-                    ftxt = each.replace("*", "<em>", 1).replace("*", "</em>> ", 1)
-                else:
-                    ftxt = each.replace("*", "<em>", 1).replace("*", "</em>", 1)
-                line = line.replace(each, ftxt)
+                for each in re.findall("\*{1}[\w:\"\.\+'\s\.|#\\&=,\$\!\?\;\-\[\]]+\*{1}", line):
+                    if (cname == "Yahoo to Acquire Tumblr.txt"):
+                        ftxt = each.replace("*", "<em>", 1).replace("*", "</em>> ", 1)
+                    else:
+                        ftxt = each.replace("*", "<em>", 1).replace("*", "</em>", 1)
+                    line = line.replace(each, ftxt)
 
-            for each in re.findall("(\!\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]+\]\(['\(\)\#\;?\@\%\w\&:\,\./\~\s\"\!\#\=\+-]+\))", line): # Parse images
-                desc = each.split("]")[0].lstrip("![")
-                url = each.split("]")[1].split(" ")[0].lstrip("(")
-                alt = each.split("]")[1].split(" &#8220;")[1].rstrip("&#8221;)")
-                line = line.replace(each, "<div class=\"image\"><img src=\""+url+"\" alt=\""+alt+"\" title=\""+title+"\"></div>")
+                for each in re.findall("(\!\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]+\]\(['\(\)\#\;?\@\%\w\&:\,\./\~\s\"\!\#\=\+-]+\))", line): # Parse images
+                    desc = each.split("]")[0].lstrip("![")
+                    url = each.split("]")[1].split(" ")[0].lstrip("(")
+                    alt = each.split("]")[1].split(" &#8220;")[1].rstrip("&#8221;)")
+                    line = line.replace(each, "<div class=\"image\"><img src=\""+url+"\" alt=\""+alt+"\" title=\""+title+"\"></div>")
 
-            for each in re.findall("""(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\])(\(\s*(<.*?>|((?:(?:\(.*?\))|[^\(\)]))*?)\s*((['"])(.*?)\12\s*)?\))""", line): # Parse links
-                desc = each[0].lstrip("[").rstrip("]")
-                url = each[1].lstrip("(").rstrip(")").replace("&", "&amp;")
+                for each in re.findall("""(\[[\w\@\s\"'\|\<\>\.\#?\*\;\%\+\=!\,-:$&]*\])(\(\s*(<.*?>|((?:(?:\(.*?\))|[^\(\)]))*?)\s*((['"])(.*?)\12\s*)?\))""", line): # Parse links
+                    desc = each[0].lstrip("[").rstrip("]")
+                    url = each[1].lstrip("(").rstrip(")").replace("&", "&amp;")
 
-                if (url.endswith(".txt") == True):
-                    url = url.replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
-                    line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
-                elif (url == ""):
-                    line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+desc.replace("<em>", "").replace("</em>", "").replace(" ", "-")+".htm\">"+desc+"</a>")
-                else:
-                    line = line.replace(each[0]+each[1], "<a href=\""+url+"\">"+desc+"</a>")
+                    if (url.endswith(".txt") == True):
+                        url = url.replace(".txt", ".htm").replace(" ", "-").replace("&#8220;", "").replace("&#8221;", "").replace("&#8217;", "").replace("&#8216;", "").replace("&#8217;", "")
+                        line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+url.replace(" ", "-")+"\">"+desc+"</a>")
+                    elif (url == ""):
+                        line = line.replace(each[0]+each[1], "<a class=\"local\" href=\""+desc.replace("<em>", "").replace("</em>", "").replace(" ", "-")+".htm\">"+desc+"</a>")
+                    else:
+                        line = line.replace(each[0]+each[1], "<a href=\""+url+"\">"+desc+"</a>")
 
-            # Parse footnotes
-            for each in re.findall("(\[\^[0-9]+\])", line):
-                mark = each.lstrip("[^").rstrip("]")
-                url = """<sup id="fnref"""+mark+""""><a href="#fn"""+mark+"""" rel="footnote">"""+mark+"""</a></sup>"""
-                line = line.replace(each, url)
+                # Parse footnotes
+                for each in re.findall("(\[\^[0-9]+\])", line):
+                    mark = each.lstrip("[^").rstrip("]")
+                    url = """<sup id="fnref"""+mark+""""><a href="#fn"""+mark+"""" rel="footnote">"""+mark+"""</a></sup>"""
+                    line = line.replace(each, url)
 
-            # Parse single-line comments
-            if (re.match("[/]{2}", line) != None):
-                line = line.replace("//","<!--")+" -->"
+                # Parse single-line comments
+                if (re.match("[/]{2}", line) != None):
+                    line = line.replace("//","<!--")+" -->"
+            else:
+                line = "<div class=\"iframe\">"+line+"</div>"
 
             if (current == "<p>,,</p>"): # If a paragraph
                 line = current.replace(",,", line.strip())

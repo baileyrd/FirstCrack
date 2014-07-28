@@ -127,6 +127,10 @@ body
 {
     display:            inline;
 }
+.iframe
+{
+    text-align:         center;
+}
 .image
 {
     margin:             0px -50% 0px -50%;
