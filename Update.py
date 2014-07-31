@@ -217,10 +217,10 @@ for position, each in enumerate(files):
                 if (re.search("(--)", line)): # Parse emdashes
                     line = line.replace("--", "&#160;&#8212;&#160;")
 
-                for each in re.findall("([\s\<\>\\\*\/\[\.\-\(]+\"[\w\%\#\\*<\>]+)", line): # Parse double-quote quotations
+                for each in re.findall("([\s\<\>\\\*\/\[\-\(]+\"[\[\w\%\#\\*<\>]+)", line): # Parse double-quote quotations
                     ftxt = each.replace("\"", "&#8220;", 1)
                     line = line.replace(each, ftxt)
-                for each in re.findall("(\w+\.?\"[\s\)\]\<\>\.\*\-\,])", line):
+                for each in re.findall("([\)\w+\.]+\"[\s\)\]\<\>\.\*\-\,])", line):
                     ftxt = each.replace("\"", "&#8221;", 1)
                     line = line.replace(each, ftxt)
 
