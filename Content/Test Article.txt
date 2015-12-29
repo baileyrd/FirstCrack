@@ -1,5 +1,4 @@
 Test Article
-============
 
 This is a test article, bundled with First Crack so as to give you an idea of what such a file ought to look like and the ideal end result. The following is filler text courtesy of [Fillerati](http://www.fillerati.com/).  
 
