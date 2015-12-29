@@ -36,8 +36,9 @@ Now that you are familiar with the directory structure, types of files First Cra
 ### Removing a Post: ###
 To remove a post, simply delete the content file from the Content directory, then run Update.py. The CMS will remove the appropriate Structure file and rebuild  the site to reflect your changes.
 
----
-
 ### First Crack's Authoring Mode ###
 
 First Crack also comes equipped with an "authoring" mode, which allows you to do the following: force a single article to rebuild, force all articles to rebuild, upload a specific article, upload the most recent five articles, re-upload the entire website, and upload all back-end files. Enter this mode by entering "./Update.py -a" at the command prompt, at which point the CMS will prompt you for further input.  
+
+
+So there you have it: First Crack. I have put a great deal of effort into this CMS over the last three years, and I believe it shows in the final product. I can't wait to see what you all think.
