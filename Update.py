@@ -196,8 +196,11 @@ for position, each in enumerate(files):
                 types.append("<p>,,</p>")
             elif (re.match("<", line) != None):
                 types.append("RAW HTML")
-            else: 
-                types.append("<blank>,,</blank>")
+            else:
+                if (re.match("^\n", line) != None and types[-1] == "<blank>,,</blank>"):
+                    types.append("<br />")
+                else:
+                    types.append("<blank>,,</blank>")
 
             if (len(types) == 4):
                 types.pop(0)
@@ -208,7 +211,9 @@ for position, each in enumerate(files):
 
             if (current != "RAW HTML"):
                 # line = line.replace("&", "&#38;")
-                if (re.search("(\&)", line) != None):
+                if (re.search("&[a-z]{4}\;", line) != None):
+                    pass
+                elif (re.search("(\&)", line) != None):
                     line = line.replace("&", "&#38;")
 
                 if (re.match("---", line) != None): # Parse <hr /> elements
@@ -307,7 +312,6 @@ for position, each in enumerate(files):
             elif (current == "<bqt>,,</bqt>"): # If the continuation of a blockquote
                 line = "<p>"+line.strip().replace("> ", "")+"</p>"
             elif ((current != "<bqt>,,</bqt>") and ((second == "<bqt>,,</bqt>") or (second == "<blockquote>,,</blockquote>"))): # If an element following a blockquote
-                # RKLA:SJHFJAKLASGDHJLKASJHDJLKA
                 line = line.strip().replace("> ", "")+"</blockquote>\n"
                 active = ""
             elif ((current == "<div class=\"footnote\">,,</div>")): # If a footnote
@@ -320,7 +324,10 @@ for position, each in enumerate(files):
                     line = "</div>"+current.split(",,")[0]+"<p>"+line.strip()+"</p>"
                     line = line.replace("div ", "div id=\"fn"+str(mark)+"\" ")
             else: # Blank line
-                line = line.strip()
+                if (current == "<br />"):
+                    line = "<br />"
+                else:
+                    line = line.strip()
 
             if (iter_count == 0):
                 first_paragraph = line
